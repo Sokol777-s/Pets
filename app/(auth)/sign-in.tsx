@@ -1,63 +1,75 @@
-import { useSignIn } from '@clerk/clerk-expo'
-import { Link, useRouter } from 'expo-router'
-import { Text, TextInput, Button, View } from 'react-native'
-import React from 'react'
+import * as React from 'react';
+import { Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { useSignIn } from '@clerk/clerk-expo';
+import { useRouter } from 'expo-router';
 
-export default function Page() {
-  const { signIn, setActive, isLoaded } = useSignIn()
-  const router = useRouter()
+export default function SignInScreen() {
+  const { signIn, setActive, isLoaded } = useSignIn();
+  const router = useRouter();
 
-  const [emailAddress, setEmailAddress] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const [emailAddress, setEmailAddress] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [error, setError] = React.useState<string | null>(null);
 
-  // Handle the submission of the sign-in form
-  const onSignInPress = React.useCallback(async () => {
-    if (!isLoaded) return
+  const onSignInPress = async () => {
+    if (!isLoaded) return;
+    setError(null);
 
-    // Start the sign-in process using the email and password provided
     try {
-      const signInAttempt = await signIn.create({
-        identifier: emailAddress,
-        password,
-      })
+      const signInAttempt = await signIn.create({ identifier: emailAddress, password });
 
-      // If sign-in process is complete, set the created session as active
-      // and redirect the user
       if (signInAttempt.status === 'complete') {
-        await setActive({ session: signInAttempt.createdSessionId })
-        router.replace('/')
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.replace('/');
       } else {
-        // If the status isn't complete, check why. User might need to
-        // complete further steps.
-        console.error(JSON.stringify(signInAttempt, null, 2))
+        console.error(JSON.stringify(signInAttempt, null, 2));
       }
-    } catch (err) {
-    
-      console.error(JSON.stringify(err, null, 2))
+    } catch (err: any) {
+      setError(err.errors?.[0]?.message || 'Ошибка входа');
     }
-  }, [isLoaded, emailAddress, password])
+  };
 
   return (
-    <View>
+    <View style={styles.container}>
+      <Text style={styles.title}>Вход</Text>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
       <TextInput
         autoCapitalize="none"
         value={emailAddress}
-        placeholder="Enter email"
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+        placeholder="Введите email"
+        placeholderTextColor="#AAAAAA"
+        onChangeText={setEmailAddress}
+        style={styles.input}
       />
       <TextInput
         value={password}
-        placeholder="Enter password"
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
+        placeholder="Введите пароль"
+        placeholderTextColor="#AAAAAA"
+        secureTextEntry
+        onChangeText={setPassword}
+        style={styles.input}
       />
-      <Button title="Sign in" onPress={onSignInPress} />
-      <View>
-        <Text>Don't have an account?</Text>
-        <Link href="/(auth)/sign-up">
-  <Text>Sign up</Text>
-</Link>
-      </View>
+
+      <TouchableOpacity style={styles.button} onPress={onSignInPress}>
+        <Text style={styles.buttonText}>Войти</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/')}>
+        <Text style={styles.backButtonText}>⬅ Назад на главную</Text>
+      </TouchableOpacity>
     </View>
-  )
+  );
 }
+
+// 🎨 **Стили**
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center', padding: 20 },
+  title: { color: '#FFA500', fontSize: 28, fontWeight: 'bold', marginBottom: 20 },
+  input: { width: '100%', backgroundColor: '#1E1E1E', color: '#FFFFFF', padding: 15, borderRadius: 12, borderWidth: 1, borderColor: '#444', marginBottom: 12 },
+  errorText: { color: '#FF4500', marginBottom: 10 },
+  button: { backgroundColor: '#FFA500', paddingVertical: 12, width: '100%', alignItems: 'center', borderRadius: 20, marginTop: 10 },
+  buttonText: { color: '#121212', fontSize: 16, fontWeight: 'bold' },
+  backButton: { backgroundColor: '#444', paddingVertical: 12, width: '100%', alignItems: 'center', borderRadius: 20, marginTop: 10 },
+  backButtonText: { color: '#FFFFFF', fontSize: 16 },
+});

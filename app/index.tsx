@@ -26,7 +26,7 @@ export default function Page() {
 
       {/* Гости */}
       <SignedOut>
-        <Text style={styles.title}>Добро пожаловать в Pets App</Text>
+        <Text style={styles.title}>Добро пожаловать в Pets</Text>
         <Text style={styles.subtitle}>Присоединяйтесь и откройте больше возможностей!</Text>
 
         <Link href="/sign-in" asChild>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: '#BBBBBB',
-    fontSize: 16,
+    fontSize: 12,
     marginBottom: 20,
   },
   button: {
