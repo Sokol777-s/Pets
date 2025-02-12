@@ -2,10 +2,12 @@ import { SignedIn, SignedOut, useUser, useClerk } from '@clerk/clerk-expo';
 import { Link } from 'expo-router';
 import { Text, View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
+import {useRouter} from 'expo-router';
 
 export default function Page() {
   const { user } = useUser();
   const { signOut } = useClerk();
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -17,7 +19,8 @@ export default function Page() {
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Просьба выбрать цель</Text>
-        <Button mode="outlined" style={styles.choiceButton} labelStyle={styles.choiceText}>
+        <Button mode="outlined" style={styles.choiceButton} labelStyle={styles.choiceText}
+         onPress={() => router.push('/ostavit-pitomca/PetForm')}>
           Оставить питомца
         </Button>
         <Button mode="outlined" style={styles.choiceButton} labelStyle={styles.choiceText}>

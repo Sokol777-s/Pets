@@ -94,14 +94,49 @@ export default function SignUpScreen() {
   );
 }
 
-// 🎨 **Стили**
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center', padding: 20 },
-  title: { color: '#FFA500', fontSize: 28, fontWeight: 'bold', marginBottom: 20 },
-  input: { width: '100%', backgroundColor: '#1E1E1E', color: '#FFFFFF', padding: 15, borderRadius: 12, borderWidth: 1, borderColor: '#444', marginBottom: 12 },
-  errorText: { color: '#FF4500', marginBottom: 10 },
-  button: { backgroundColor: '#FFA500', paddingVertical: 12, width: '100%', alignItems: 'center', borderRadius: 20, marginTop: 10 },
-  buttonText: { color: '#121212', fontSize: 16, fontWeight: 'bold' },
-  backButton: { backgroundColor: '#444', paddingVertical: 12, width: '100%', alignItems: 'center', borderRadius: 20, marginTop: 10 },
-  backButtonText: { color: '#FFFFFF', fontSize: 16 },
+
+  container: { flex: 1,
+     backgroundColor: '#121212',
+     justifyContent: 'center', 
+     alignItems: 'center',
+      padding: 20 },
+
+  title: { color: '#FFA500',
+     fontSize: 28,
+     fontWeight: 'bold',
+      marginBottom: 20 },
+
+  input: { width: '100%',
+     backgroundColor: '#1E1E1E',
+      color: '#FFFFFF', 
+      padding: 15, 
+      borderRadius: 12, 
+      borderWidth: 1, 
+      borderColor: '#444', 
+      marginBottom: 12 },
+
+  errorText: { color: '#FF4500',
+     marginBottom: 10 },
+
+  button: { backgroundColor: '#FFA500', 
+    paddingVertical: 12,
+     width: '100%', 
+     alignItems: 'center',
+      borderRadius: 20,
+       marginTop: 10 },
+
+  buttonText: { color: '#121212',
+    fontSize: 16, 
+    fontWeight: 'bold' },
+
+  backButton: { backgroundColor: '#444',
+     paddingVertical: 12,
+      width: '100%',
+       alignItems: 'center',
+        borderRadius: 20,
+         marginTop: 10 },
+
+  backButtonText: { color: '#FFFFFF',
+     fontSize: 16 },
 });
