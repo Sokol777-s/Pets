@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 export default function PetForm() {
   const router = useRouter();
   const [petType, setPetType] = useState('cat');
+  const [petName, setPetName] = useState('');
   const [petInfo, setPetInfo] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -36,12 +37,30 @@ export default function PetForm() {
     }
   };
 
+  const validatePetName = (name: string) => {
+    const nameRegex = /^[A-Za-zА-Яа-я]{2,}[0-9]{0,2}$/;
+    return nameRegex.test(name);
+  };
+
   const handleSubmit = () => {
-    if (!petType || !image) {
+    if (!petType || !image || !petName) {
       setError('Все поля обязательны!');
       Alert.alert('Ошибка', 'Пожалуйста, заполните все поля перед сохранением.');
       return;
     }
+
+    if (!validatePetName(petName)) {
+      setError('Кличка должна содержать минимум 2 буквы и не более 2 цифр!');
+      Alert.alert('Ошибка', 'Кличка должна содержать минимум 2 буквы и не более 2 цифр.');
+      return;
+    }
+
+    if (petInfo.length > 100) {
+      setError('Информация не должна превышать 100 символов!');
+      Alert.alert('Ошибка', 'Информация о питомце не должна превышать 100 символов.');
+      return;
+    }
+
     setError('');
     Alert.alert('Успех', 'Данные успешно сохранены!');
   };
@@ -50,6 +69,15 @@ export default function PetForm() {
     <View style={styles.container}>
       <Text style={styles.title}>Заполнение анкеты питомца</Text>
       <View style={styles.formCard}>
+        <Text style={styles.label}>Кличка питомца:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Введите кличку питомца"
+          placeholderTextColor="#AAAAAA"
+          value={petName}
+          onChangeText={setPetName}
+        />
+
         <Text style={styles.label}>Выбор вида:</Text>
         <RadioButton.Group onValueChange={setPetType} value={petType}>
           <View style={styles.radioRow}>
@@ -58,13 +86,14 @@ export default function PetForm() {
           </View>
         </RadioButton.Group>
 
-        <Text style={styles.label}>Информация о питомце (не обязательно)</Text>
+        <Text style={styles.label}>Информация о питомце:</Text>
         <TextInput
           style={styles.input}
-          placeholder="Введите информацию"
+          placeholder="Введите информацию (не более 100 символов)"
           placeholderTextColor="#AAAAAA"
           value={petInfo}
           onChangeText={setPetInfo}
+          maxLength={100}
           onFocus={() => Alert.alert('Подсказка', 'Данное поле не является обязательным.')}
         />
 
@@ -102,7 +131,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#FFA500',
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20
   },
@@ -157,40 +186,39 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     paddingVertical: 12,
-    alignItems: 'center'
-  },
-  buttonText: {
-    color: '#121212',
-    fontSize: 11,
-    fontWeight: 'bold'
-  },
-  savebuttonText:{
-    color: '#121212',
-    fontSize: 17,
-    fontWeight: 'bold',
-  },
-  backButton: {
-    borderColor: '#FFA500',
-    borderWidth: 2,
-    borderRadius: 20,
-    marginTop: 20,
-    paddingVertical: 12,
-    alignItems: 'center',
-    width: '100%'
-  },
-  backText: {
-    color: '#FFA500',
-    fontSize: 16
-  },
-  image: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 10
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    marginTop: 10
-  }
+    alignItems: 'center' },
+    backButton: {
+      borderColor: '#FFA500',
+      borderWidth: 2,
+      borderRadius: 20,
+      marginTop: 20,
+      paddingVertical: 12,
+      alignItems: 'center',
+      width: '100%',
+    },
+    backText: {
+      color: '#FFA500',
+      fontSize: 16
+    },
+    savebuttonText: {
+      color: '#121212',
+      fontSize: 17,
+      fontWeight: 'bold',
+    },
+    buttonText: {
+      color: '#121212',
+      fontSize: 11,
+      fontWeight: 'bold'
+    },
+    image: {
+      width: 200,
+      height: 200,
+      borderRadius: 10,
+      marginBottom: 10
+    },
+    errorText: {
+      color: 'red',
+      fontSize: 14,
+      marginTop: 10
+    }
 });
