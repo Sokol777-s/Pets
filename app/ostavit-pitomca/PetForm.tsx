@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { Button, RadioButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PetForm() {
   const router = useRouter();
@@ -43,27 +44,32 @@ export default function PetForm() {
   };
 
   const handleSubmit = () => {
+    console.log('Кнопка сохранения нажата');
+  
     if (!petType || !image || !petName) {
       setError('Все поля обязательны!');
-      Alert.alert('Ошибка', 'Пожалуйста, заполните все поля перед сохранением.');
+      console.log('Ошибка: не все поля заполнены');
       return;
     }
-
+  
     if (!validatePetName(petName)) {
       setError('Кличка должна содержать минимум 2 буквы и не более 2 цифр!');
-      Alert.alert('Ошибка', 'Кличка должна содержать минимум 2 буквы и не более 2 цифр.');
+      console.log('Ошибка: некорректное имя питомца');
       return;
     }
-
+  
     if (petInfo.length > 100) {
-      setError('Информация не должна превышать 100 символов!');
-      Alert.alert('Ошибка', 'Информация о питомце не должна превышать 100 символов.');
+      setError('Информация о питомце не должна превышать 100 символов!');
+      console.log('Ошибка: информация слишком длинная');
       return;
     }
-
+  
     setError('');
-    Alert.alert('Успех', 'Данные успешно сохранены!');
+    console.log('Все проверки пройдены, выполняем переход на /ostavit-pitomca/Service');
+  
+    router.push('/ostavit-pitomca/Service');
   };
+  
 
   return (
     <View style={styles.container}>
@@ -81,8 +87,10 @@ export default function PetForm() {
         <Text style={styles.label}>Выбор вида:</Text>
         <RadioButton.Group onValueChange={setPetType} value={petType}>
           <View style={styles.radioRow}>
-            <RadioButton value="cat" /><Text style={styles.radioLabel}>Кошка</Text>
-            <RadioButton value="dog" /><Text style={styles.radioLabel}>Собака</Text>
+            <RadioButton value="cat" />
+            <Text style={styles.radioLabel}>Кошка</Text>
+            <RadioButton value="dog" />
+            <Text style={styles.radioLabel}>Собака</Text>
           </View>
         </RadioButton.Group>
 
@@ -107,7 +115,7 @@ export default function PetForm() {
             Сделать снимок
           </Button>
         </View>
-        
+
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         <Button mode="contained" onPress={handleSubmit} style={styles.saveButton} labelStyle={styles.savebuttonText}>
@@ -127,13 +135,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
+    padding: 20,
   },
   title: {
     color: '#FFA500',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20
+    marginBottom: 20,
   },
   formCard: {
     backgroundColor: '#1E1E1E',
@@ -142,21 +150,21 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#444'
+    borderColor: '#444',
   },
   label: {
     fontSize: 15,
     color: '#FFFFFF',
-    marginBottom: 10
+    marginBottom: 10,
   },
   radioRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
   },
   radioLabel: {
     color: '#FFFFFF',
-    marginRight: 20
+    marginRight: 20,
   },
   input: {
     width: '100%',
@@ -166,19 +174,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#444',
-    marginBottom: 12
+    marginBottom: 12,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: 10
+    marginTop: 10,
   },
   smallButton: {
     backgroundColor: '#FFA500',
     borderRadius: 20,
     width: '48%',
-    paddingVertical: 8
+    paddingVertical: 8,
   },
   saveButton: {
     backgroundColor: '#32CD32',
@@ -186,39 +194,40 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     paddingVertical: 12,
-    alignItems: 'center' },
-    backButton: {
-      borderColor: '#FFA500',
-      borderWidth: 2,
-      borderRadius: 20,
-      marginTop: 20,
-      paddingVertical: 12,
-      alignItems: 'center',
-      width: '100%',
-    },
-    backText: {
-      color: '#FFA500',
-      fontSize: 16
-    },
-    savebuttonText: {
-      color: '#121212',
-      fontSize: 17,
-      fontWeight: 'bold',
-    },
-    buttonText: {
-      color: '#121212',
-      fontSize: 11,
-      fontWeight: 'bold'
-    },
-    image: {
-      width: 200,
-      height: 200,
-      borderRadius: 10,
-      marginBottom: 10
-    },
-    errorText: {
-      color: 'red',
-      fontSize: 14,
-      marginTop: 10
-    }
+    alignItems: 'center',
+  },
+  backButton: {
+    borderColor: '#FFA500',
+    borderWidth: 2,
+    borderRadius: 20,
+    marginTop: 20,
+    paddingVertical: 12,
+    alignItems: 'center',
+    width: '100%',
+  },
+  backText: {
+    color: '#FFA500',
+    fontSize: 16,
+  },
+  savebuttonText: {
+    color: '#121212',
+    fontSize: 17,
+    fontWeight: 'bold',
+  },
+  buttonText: {
+    color: '#121212',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 10,
+  },
 });
