@@ -102,7 +102,7 @@ export default function PetForm() {
           value={petInfo}
           onChangeText={setPetInfo}
           maxLength={100}
-          onFocus={() => Alert.alert('Подсказка', 'Данное поле не является обязательным.')}
+          
         />
 
         <Text style={styles.label}>Фото питомца</Text>
@@ -122,9 +122,9 @@ export default function PetForm() {
           Сохранить
         </Button>
       </View>
-      <Button mode="outlined" style={styles.backButton} labelStyle={styles.backText} onPress={() => router.back()}>
-        Назад
-      </Button>
+      <Button mode="outlined" style={styles.backButton} labelStyle={styles.backText} onPress={() => router.push('/')}>
+  Назад
+</Button>
     </View>
   );
 }

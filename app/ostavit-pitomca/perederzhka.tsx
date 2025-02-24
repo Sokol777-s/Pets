@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFA500',
     marginBottom: 20,
+    marginTop : 30,
   },
   label: {
     fontSize: 16,
