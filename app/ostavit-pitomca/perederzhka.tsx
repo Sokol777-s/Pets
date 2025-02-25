@@ -1,29 +1,36 @@
-import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 
 export default function PetCareForm() {
   const router = useRouter();
-  const [duration, setDuration] = useState('');
+  const [duration, setDuration] = useState('1 день');
   const [food, setFood] = useState('');
   const [care, setCare] = useState('');
   const [specialNeeds, setSpecialNeeds] = useState('');
   const [contact, setContact] = useState('');
+  const actionSheetRef = useRef<ActionSheetRef>(null);
+
+  // Форматируем дни
+  const formatDays = (num: number) => {
+    if (num === 1) return '1 день';
+    if (num >= 2 && num <= 6) return `${num} дня`;
+    return `${num} дней`;
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Перередержка</Text>
+      <Text style={styles.title}>Передержка</Text>
 
+      {/* Срок на который нужно оставить */}
       <Text style={styles.label}>Срок на который нужно оставить</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Например: 3 дня, 1 неделя"
-        placeholderTextColor="#AAAAAA"
-        value={duration}
-        onChangeText={setDuration}
-      />
+      <TouchableOpacity style={styles.selector} onPress={() => actionSheetRef.current?.show()}>
+        <Text style={styles.selectorText}>{duration}</Text>
+      </TouchableOpacity>
 
+      {/* Чем кормить */}
       <Text style={styles.label}>Чем кормить или корм предоставите</Text>
       <TextInput
         style={styles.input}
@@ -33,6 +40,7 @@ export default function PetCareForm() {
         onChangeText={setFood}
       />
 
+      {/* Уход */}
       <Text style={styles.label}>Уход</Text>
       <TextInput
         style={styles.input}
@@ -42,6 +50,7 @@ export default function PetCareForm() {
         onChangeText={setCare}
       />
 
+      {/* Особые требования */}
       <Text style={styles.label}>Особые требования</Text>
       <TextInput
         style={styles.input}
@@ -51,6 +60,7 @@ export default function PetCareForm() {
         onChangeText={setSpecialNeeds}
       />
 
+      {/* Контакт */}
       <Text style={styles.label}>Контакт для связи</Text>
       <TextInput
         style={styles.input}
@@ -60,6 +70,7 @@ export default function PetCareForm() {
         onChangeText={setContact}
       />
 
+      {/* Кнопки */}
       <Button mode="contained" onPress={() => alert('Форма отправлена!')} style={styles.submitButton}>
         Сохранить
       </Button>
@@ -67,6 +78,24 @@ export default function PetCareForm() {
       <Button mode="outlined" onPress={() => router.back()} style={styles.backButton} labelStyle={styles.backText}>
         Назад
       </Button>
+
+      {/* ActionSheet для выбора срока */}
+      <ActionSheet ref={actionSheetRef} containerStyle={styles.sheetContainer}>
+        <ScrollView style={styles.scrollSheet}>
+          {[...Array(30).keys()].map((num) => (
+            <TouchableOpacity
+              key={num + 1}
+              style={styles.option}
+              onPress={() => {
+                setDuration(formatDays(num + 1));
+                actionSheetRef.current?.hide();
+              }}
+            >
+              <Text style={styles.optionText}>{formatDays(num + 1)}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </ActionSheet>
     </ScrollView>
   );
 }
@@ -83,13 +112,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFA500',
     marginBottom: 20,
-    marginTop : 30,
+    marginTop: 30,
   },
   label: {
     fontSize: 16,
     color: '#FFFFFF',
     alignSelf: 'flex-start',
     marginBottom: 5,
+  },
+  selector: {
+    width: '100%',
+    backgroundColor: '#1E1E1E',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FFA500',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  selectorText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
   input: {
     width: '100%',
@@ -120,5 +163,25 @@ const styles = StyleSheet.create({
   backText: {
     color: '#FFA500',
     fontSize: 16,
+  },
+  sheetContainer: {
+    backgroundColor: '#1E1E1E',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 10,
+    maxHeight: 400, // Ограничение высоты
+  },
+  scrollSheet: {
+    maxHeight: 350, // Чтоб можно было скроллить
+  },
+  option: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+    alignItems: 'center',
+  },
+  optionText: {
+    color: '#FFA500',
+    fontSize: 18,
   },
 });
