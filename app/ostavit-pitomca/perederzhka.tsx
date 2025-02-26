@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, RadioButton } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useState, useRef } from 'react';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
@@ -7,67 +7,84 @@ import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 export default function PetCareForm() {
   const router = useRouter();
   const [duration, setDuration] = useState('1 день');
+  const [provideFood, setProvideFood] = useState('yes');
   const [food, setFood] = useState('');
-  const [care, setCare] = useState('');
+  const [feedTimes, setFeedTimes] = useState('1 раз');
+  const [walkTimes, setWalkTimes] = useState('1 раз');
   const [specialNeeds, setSpecialNeeds] = useState('');
-  const [contact, setContact] = useState('');
+  const [contact, setContact] = useState('+7');
+
   const actionSheetRef = useRef<ActionSheetRef>(null);
+  const feedSheetRef = useRef<ActionSheetRef>(null);
+  const walkSheetRef = useRef<ActionSheetRef>(null);
 
   // Форматируем дни
-  const formatDays = (num: number) => {
-    if (num === 1) return '1 день';
-    if (num >= 2 && num <= 6) return `${num} дня`;
-    return `${num} дней`;
-  };
+  const formatDays = (num: number) => (num === 1 ? '1 день' : `${num} дней`);
+
+  // Форматируем количество раз
+  const formatTimes = (num: number) => `${num} ${num === 1 ? 'раз' : 'раза'}`;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Передержка</Text>
 
-      {/* Срок на который нужно оставить */}
+      {/* Срок передержки */}
       <Text style={styles.label}>Срок на который нужно оставить</Text>
       <TouchableOpacity style={styles.selector} onPress={() => actionSheetRef.current?.show()}>
         <Text style={styles.selectorText}>{duration}</Text>
       </TouchableOpacity>
 
-      {/* Чем кормить */}
-      <Text style={styles.label}>Чем кормить или корм предоставите</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Например: Сухой корм, натуралка"
-        placeholderTextColor="#AAAAAA"
-        value={food}
-        onChangeText={setFood}
-      />
+      {/* Предоставите ли вы корм? */}
+      <Text style={styles.label}>Предоставите ли вы корм?</Text>
+      <View style={styles.radioContainer}>
+        <TouchableOpacity style={styles.radioOption} onPress={() => setProvideFood('yes')}>
+          <RadioButton value="yes" status={provideFood === 'yes' ? 'checked' : 'unchecked'} onPress={() => setProvideFood('yes')} color="#FFA500" />
+          <Text style={styles.radioText}>Да</Text>
+        </TouchableOpacity>
 
-      {/* Уход */}
-      <Text style={styles.label}>Уход</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Когда кормить, гулять"
-        placeholderTextColor="#AAAAAA"
-        value={care}
-        onChangeText={setCare}
-      />
+        <TouchableOpacity style={styles.radioOption} onPress={() => setProvideFood('no')}>
+          <RadioButton value="no" status={provideFood === 'no' ? 'checked' : 'unchecked'} onPress={() => setProvideFood('no')} color="#FFA500" />
+          <Text style={styles.radioText}>Нет</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Поле ввода корма */}
+      {provideFood === 'no' && (
+        <TextInput style={styles.input} placeholder="Чем кормить? : Сухой корм, натуралка" placeholderTextColor="#AAAAAA" value={food} onChangeText={setFood} />
+      )}
+
+      {/* Сколько раз в день кормить */}
+      <Text style={styles.label}>Сколько раз в день кормить?</Text>
+      <TouchableOpacity style={styles.selector} onPress={() => feedSheetRef.current?.show()}>
+        <Text style={styles.selectorText}>{feedTimes}</Text>
+      </TouchableOpacity>
+
+      {/* Сколько раз в день гулять */}
+      <Text style={styles.label}>Сколько раз в день гулять?</Text>
+      <TouchableOpacity style={styles.selector} onPress={() => walkSheetRef.current?.show()}>
+        <Text style={styles.selectorText}>{walkTimes}</Text>
+      </TouchableOpacity>
 
       {/* Особые требования */}
       <Text style={styles.label}>Особые требования</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Например: Приём лекарств, аллергии"
-        placeholderTextColor="#AAAAAA"
-        value={specialNeeds}
-        onChangeText={setSpecialNeeds}
-      />
+      <TextInput style={styles.input} placeholder="Например: Приём лекарств, аллергии" placeholderTextColor="#AAAAAA" value={specialNeeds} onChangeText={setSpecialNeeds} />
 
       {/* Контакт */}
       <Text style={styles.label}>Контакт для связи</Text>
       <TextInput
         style={styles.input}
-        placeholder="Ваш номер телефона"
+        placeholder="+7XXXXXXXXXX"
         placeholderTextColor="#AAAAAA"
         value={contact}
-        onChangeText={setContact}
+        onChangeText={(text) => {
+          if (!text.startsWith('+7')) {
+            setContact('+7');
+          } else {
+            setContact(text.replace(/[^+\d]/g, '').slice(0, 12));
+          }
+        }}
+        keyboardType="phone-pad"
+        maxLength={12}
       />
 
       {/* Кнопки */}
@@ -79,19 +96,34 @@ export default function PetCareForm() {
         Назад
       </Button>
 
-      {/* ActionSheet для выбора срока */}
+      {/* ActionSheet для срока */}
       <ActionSheet ref={actionSheetRef} containerStyle={styles.sheetContainer}>
         <ScrollView style={styles.scrollSheet}>
           {[...Array(30).keys()].map((num) => (
-            <TouchableOpacity
-              key={num + 1}
-              style={styles.option}
-              onPress={() => {
-                setDuration(formatDays(num + 1));
-                actionSheetRef.current?.hide();
-              }}
-            >
+            <TouchableOpacity key={num + 1} style={styles.option} onPress={() => { setDuration(formatDays(num + 1)); actionSheetRef.current?.hide(); }}>
               <Text style={styles.optionText}>{formatDays(num + 1)}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </ActionSheet>
+
+      {/* ActionSheet для кормления */}
+      <ActionSheet ref={feedSheetRef} containerStyle={styles.sheetContainer}>
+        <ScrollView style={styles.scrollSheet}>
+          {[...Array(5).keys()].map((num) => (
+            <TouchableOpacity key={num + 1} style={styles.option} onPress={() => { setFeedTimes(formatTimes(num + 1)); feedSheetRef.current?.hide(); }}>
+              <Text style={styles.optionText}>{formatTimes(num + 1)}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </ActionSheet>
+
+      {/* ActionSheet для прогулок */}
+      <ActionSheet ref={walkSheetRef} containerStyle={styles.sheetContainer}>
+        <ScrollView style={styles.scrollSheet}>
+          {[...Array(5).keys()].map((num) => (
+            <TouchableOpacity key={num + 1} style={styles.option} onPress={() => { setWalkTimes(formatTimes(num + 1)); walkSheetRef.current?.hide(); }}>
+              <Text style={styles.optionText}>{formatTimes(num + 1)}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -144,6 +176,21 @@ const styles = StyleSheet.create({
     borderColor: '#444',
     marginBottom: 15,
   },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  radioText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginLeft: 5,
+  },
   submitButton: {
     backgroundColor: '#32CD32',
     borderRadius: 20,
@@ -169,10 +216,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: 10,
-    maxHeight: 400, // Ограничение высоты
+    maxHeight: 400,
   },
   scrollSheet: {
-    maxHeight: 350, // Чтоб можно было скроллить
+    maxHeight: 350,
   },
   option: {
     padding: 15,
