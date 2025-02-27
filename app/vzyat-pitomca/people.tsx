@@ -134,7 +134,7 @@ export default function AdoptionForm() {
           <Text style={styles.buttonText}>Отправить</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.push("/")}>
           <Text style={styles.backButtonText}>⬅ Назад</Text>
         </TouchableOpacity>
       </View>

@@ -1,9 +1,18 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TextInput, 
+  TouchableOpacity, 
+  Image, 
+  Alert, 
+  Keyboard, 
+  TouchableWithoutFeedback 
+} from 'react-native';
 import { Button, RadioButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
 
 export default function PetForm() {
   const router = useRouter();
@@ -69,63 +78,63 @@ export default function PetForm() {
   
     router.push('/ostavit-pitomca/Service');
   };
-  
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Заполнение анкеты питомца</Text>
-      <View style={styles.formCard}>
-        <Text style={styles.label}>Кличка питомца:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Введите кличку питомца"
-          placeholderTextColor="#AAAAAA"
-          value={petName}
-          onChangeText={setPetName}
-        />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Заполнение анкеты питомца</Text>
+        <View style={styles.formCard}>
+          <Text style={styles.label}>Кличка питомца:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Введите кличку питомца"
+            placeholderTextColor="#AAAAAA"
+            value={petName}
+            onChangeText={setPetName}
+          />
 
-        <Text style={styles.label}>Выбор вида:</Text>
-        <RadioButton.Group onValueChange={setPetType} value={petType}>
-          <View style={styles.radioRow}>
-            <RadioButton value="cat" />
-            <Text style={styles.radioLabel}>Кошка</Text>
-            <RadioButton value="dog" />
-            <Text style={styles.radioLabel}>Собака</Text>
+          <Text style={styles.label}>Выбор вида:</Text>
+          <RadioButton.Group onValueChange={setPetType} value={petType}>
+            <View style={styles.radioRow}>
+              <RadioButton value="cat" />
+              <Text style={styles.radioLabel}>Кошка</Text>
+              <RadioButton value="dog" />
+              <Text style={styles.radioLabel}>Собака</Text>
+            </View>
+          </RadioButton.Group>
+
+          <Text style={styles.label}>Информация о питомце:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Введите информацию (не более 100 символов)"
+            placeholderTextColor="#AAAAAA"
+            value={petInfo}
+            onChangeText={setPetInfo}
+            maxLength={100}
+          />
+
+          <Text style={styles.label}>Фото питомца</Text>
+          {image && <Image source={{ uri: image }} style={styles.image} />}
+          <View style={styles.buttonRow}>
+            <Button mode="contained" onPress={pickImage} style={styles.smallButton} labelStyle={styles.buttonText}>
+              Выбрать фото
+            </Button>
+            <Button mode="contained" onPress={takePhoto} style={styles.smallButton} labelStyle={styles.buttonText}>
+              Сделать снимок
+            </Button>
           </View>
-        </RadioButton.Group>
 
-        <Text style={styles.label}>Информация о питомце:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Введите информацию (не более 100 символов)"
-          placeholderTextColor="#AAAAAA"
-          value={petInfo}
-          onChangeText={setPetInfo}
-          maxLength={100}
-          
-        />
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-        <Text style={styles.label}>Фото питомца</Text>
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-        <View style={styles.buttonRow}>
-          <Button mode="contained" onPress={pickImage} style={styles.smallButton} labelStyle={styles.buttonText}>
-            Выбрать фото
-          </Button>
-          <Button mode="contained" onPress={takePhoto} style={styles.smallButton} labelStyle={styles.buttonText}>
-            Сделать снимок
+          <Button mode="contained" onPress={handleSubmit} style={styles.saveButton} labelStyle={styles.savebuttonText}>
+            Сохранить
           </Button>
         </View>
-
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        <Button mode="contained" onPress={handleSubmit} style={styles.saveButton} labelStyle={styles.savebuttonText}>
-          Сохранить
+        <Button mode="outlined" style={styles.backButton} labelStyle={styles.backText} onPress={() => router.push('/')}>
+          Назад
         </Button>
       </View>
-      <Button mode="outlined" style={styles.backButton} labelStyle={styles.backText} onPress={() => router.push('/')}>
-  Назад
-</Button>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
