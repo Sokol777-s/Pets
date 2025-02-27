@@ -9,6 +9,7 @@ export default function SignUpScreen() {
   React.useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
+
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
@@ -51,6 +52,8 @@ export default function SignUpScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Регистрация</Text> {/* Заголовок */}
+
       {pendingVerification ? (
         <>
           {error && <Text style={styles.errorText}>{error}</Text>}
@@ -89,7 +92,7 @@ export default function SignUpScreen() {
         </>
       )}
 
-      <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/')}>        
+      <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/')}>
         <Text style={styles.backButtonText}>⬅ Назад на главную</Text>
       </TouchableOpacity>
     </View>
@@ -97,42 +100,63 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1,
-     backgroundColor: '#121212',
-     justifyContent: 'center', 
-     alignItems: 'center',
-      padding: 20 },
+  container: { 
+    flex: 1,
+    backgroundColor: '#121212',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20 
+  },
 
-  input: { width: '100%',
-     backgroundColor: '#1E1E1E',
-      color: '#FFFFFF', 
-      padding: 15, 
-      borderRadius: 12, 
-      borderWidth: 1, 
-      borderColor: '#444', 
-      marginBottom: 12 },
+  title: { 
+    color: '#FFA500',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20, 
+  },
 
-  errorText: { color: '#FF4500',
-     marginBottom: 10 },
+  input: { 
+    width: '100%',
+    backgroundColor: '#1E1E1E',
+    color: '#FFFFFF', 
+    padding: 15, 
+    borderRadius: 12, 
+    borderWidth: 1, 
+    borderColor: '#444', 
+    marginBottom: 12 
+  },
 
-  button: { backgroundColor: '#FFA500', 
+  errorText: { 
+    color: '#FF4500',
+    marginBottom: 10 
+  },
+
+  button: { 
+    backgroundColor: '#FFA500', 
     paddingVertical: 12,
-     width: '100%', 
-     alignItems: 'center',
-      borderRadius: 20,
-       marginTop: 10 },
+    width: '100%', 
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 10 
+  },
 
-  buttonText: { color: '#121212',
+  buttonText: { 
+    color: '#121212',
     fontSize: 16, 
-    fontWeight: 'bold' },
+    fontWeight: 'bold' 
+  },
 
-  backButton: { backgroundColor: '#444',
-     paddingVertical: 12,
-      width: '100%',
-       alignItems: 'center',
-        borderRadius: 20,
-         marginTop: 10 },
+  backButton: { 
+    backgroundColor: '#444',
+    paddingVertical: 12,
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 10 
+  },
 
-  backButtonText: { color: '#FFFFFF',
-     fontSize: 16 },
+  backButtonText: { 
+    color: '#FFFFFF',
+    fontSize: 16 
+  },
 });

@@ -23,6 +23,7 @@ export default function PetCareForm() {
 
   // Форматируем количество раз
   const formatTimes = (num: number) => `${num} ${num === 1 ? 'раз' : 'раза'}`;
+   
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

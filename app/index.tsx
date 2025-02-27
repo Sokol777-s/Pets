@@ -31,6 +31,7 @@ export default function Page() {
             mode="outlined"
             style={styles.choiceButton}
             labelStyle={styles.choiceText}
+            onPress={() => router.push('/vzyat-pitomca/people')}
           >
             Взять питомца
           </Button>
