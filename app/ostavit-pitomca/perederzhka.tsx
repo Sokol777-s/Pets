@@ -92,7 +92,7 @@ export default function PetCareForm() {
         Сохранить
       </Button>
 
-      <Button mode="outlined" onPress={() => router.back()} style={styles.backButton} labelStyle={styles.backText}>
+      <Button mode="outlined" onPress={() => router.push("/ostavit-pitomca/Service")} style={styles.backButton} labelStyle={styles.backText}>
         Назад
       </Button>
 

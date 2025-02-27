@@ -1,11 +1,16 @@
 import * as React from 'react';
 import { Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { useSignIn } from '@clerk/clerk-expo';
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
 
 export default function SignInScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
+  const navigation = useNavigation();
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const [emailAddress, setEmailAddress] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -55,52 +60,64 @@ export default function SignInScreen() {
         <Text style={styles.buttonText}>Войти</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/')}> 
         <Text style={styles.backButtonText}>⬅ Назад на главную</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
-  container: { flex: 1, 
+  container: {
+    flex: 1,
     backgroundColor: '#121212',
-     justifyContent: 'center', 
-     alignItems: 'center',
-      padding: 20 },
-
-  title: { color: '#FFA500', 
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    color: '#FFA500',
     fontSize: 28,
-     fontWeight: 'bold',
-      marginBottom: 20 },
-
-  input: { width: '100%',
-     backgroundColor: '#1E1E1E',
-      color: '#FFFFFF', padding: 15,
-       borderRadius: 12, borderWidth: 1, 
-       borderColor: '#444', marginBottom: 12 },
-
-  errorText: { color: '#FF4500', 
-    marginBottom: 10 },
-
-  button: { backgroundColor: '#FFA500',
-     paddingVertical: 12, 
-     width: '100%', alignItems: 'center',
-      borderRadius: 20, 
-      marginTop: 10 },
-
-  buttonText: { color: '#121212',
-     fontSize: 16, 
-     fontWeight: 'bold' },
-
-  backButton: { backgroundColor: '#444', 
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#1E1E1E',
+    color: '#FFFFFF',
+    padding: 15,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#444',
+    marginBottom: 12,
+  },
+  errorText: {
+    color: '#FF4500',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#FFA500',
     paddingVertical: 12,
-    width: '100%', 
-    alignItems: 'center', 
-    borderRadius: 20, 
-    marginTop: 10 },
-
-  backButtonText: { color: '#FFFFFF', 
-    fontSize: 16 },
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#121212',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  backButton: {
+    backgroundColor: '#444',
+    paddingVertical: 12,
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
 });
